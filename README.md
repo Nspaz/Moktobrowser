@@ -414,7 +414,9 @@ namespace OctoBulletproof
         }
     }
 }
-```CS
+
+```
+
 Setup reminder
 	•	NuGet: Microsoft.Playwright
 	•	playwright install (once)
@@ -431,7 +433,7 @@ cp .env.example .env
 
 # Edit .env and add your Octo Browser profile UUID
 nano .env
-```
+
 
 ## Configuration
 
