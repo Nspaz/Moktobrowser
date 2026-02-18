@@ -10,6 +10,12 @@ const logger = pino({
   transport: { target: 'pino-pretty', options: { colorize: true } },
 });
 
+// Sensor simulation constants
+const NOISE_MULTIPLIER = 70; // Amplifies random noise for realistic gyroscope drift
+const GEO_DRIFT_PROBABILITY = 0.22; // 22% chance per tick to apply GPS drift (simulates sporadic movement)
+const GEO_DRIFT_AMOUNT = 0.003; // Base drift distance in degrees (~330m at equator)
+const LON_DRIFT_MULTIPLIER = 1.3; // Longitude drifts slightly more to simulate natural walking patterns
+
 interface SensorConfig {
   geo: { lat: number; lon: number; accuracy?: number; intervalMs?: number };
   orientation: { alphaRange: [number, number]; betaRange: [number, number]; gammaRange: [number, number]; intervalMs?: number };
@@ -249,7 +255,7 @@ class BulletproofOctoMobilePlaywright {
    * Random walk for sensor drift with realistic noise
    */
   private randomWalk = (current: number, noise: number) => {
-    return current + (Math.random() - 0.5) * noise * 70;
+    return current + (Math.random() - 0.5) * noise * NOISE_MULTIPLIER;
   };
 
   /**
@@ -295,10 +301,10 @@ class BulletproofOctoMobilePlaywright {
 
         // Gentle geolocation drift (realistic walking speed)
         // Only drift occasionally to simulate realistic movement
-        if (Math.random() < 0.22) {
-          const drift = (Math.random() - 0.5) * 0.003;
+        if (Math.random() < GEO_DRIFT_PROBABILITY) {
+          const drift = (Math.random() - 0.5) * GEO_DRIFT_AMOUNT;
           this.currentGeo.lat += drift;
-          this.currentGeo.lon += drift * 1.3;
+          this.currentGeo.lon += drift * LON_DRIFT_MULTIPLIER;
           
           await this.context!.setGeolocation({
             latitude: this.currentGeo.lat,
