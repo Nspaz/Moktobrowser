@@ -41,9 +41,9 @@ New behavior (exactly what you asked for):
 	•	After the cycles finish → automatically stops the Octo profile, closes browser, saves trace.zip, and exits. No zombies, no forever running.
 Your “(imported) iphone” profile + custom port still auto-detected perfectly.
 
+## VS FULL PROGRAM.CS
 
 ```
-Full `Program.cs` (replace everything)
 using Microsoft.Playwright;
 using System;
 using System.Collections.Generic;
