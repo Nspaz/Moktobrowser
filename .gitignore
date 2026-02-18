@@ -1,0 +1,8 @@
+node_modules/
+dist/
+*.log
+.env
+*.tsbuildinfo
+coverage/
+.DS_Store
+trace-*.zip
