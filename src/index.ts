@@ -48,7 +48,7 @@ class BulletproofOctoMobilePlaywright {
     this.setupProcessHandlers();
   }
 
-  private log = (level: 'info' | 'warn' | 'error', msg: string, meta?: any) => {
+  private log = (level: 'info' | 'warn' | 'error' | 'debug', msg: string, meta?: any) => {
     logger[level]({ profile: this.profileUuid.slice(0, 8), mobile: true, ...meta }, msg);
   };
 
@@ -81,7 +81,7 @@ class BulletproofOctoMobilePlaywright {
   /**
    * Start Octo profile with API POST and retry logic
    */
-  private async startOctoProfile(): Promise<string> {
+  async startOctoProfile(): Promise<string> {
     return this.retry(async () => {
       const apiUrl = process.env.OCTO_API_URL || 'http://localhost:58888/api/profiles/start';
       
@@ -107,14 +107,15 @@ class BulletproofOctoMobilePlaywright {
         throw new Error(`Octo API ${res.status}: ${text}`);
       }
       
-      const data = await res.json();
+      const data: any = await res.json();
       if (!data.ws_endpoint) {
         throw new Error('No ws_endpoint in response');
       }
       
-      this.wsEndpoint = data.ws_endpoint;
-      this.log('info', chalk.green('✅ Octo mobile profile started'), { ws: this.wsEndpoint });
-      return this.wsEndpoint;
+      const wsEndpoint: string = data.ws_endpoint;
+      this.wsEndpoint = wsEndpoint;
+      this.log('info', chalk.green('✅ Octo mobile profile started'), { ws: wsEndpoint });
+      return wsEndpoint;
     });
   }
 
@@ -239,7 +240,6 @@ class BulletproofOctoMobilePlaywright {
       alpha: this.currentOrientation.alpha,
       beta: this.currentOrientation.beta,
       gamma: this.currentOrientation.gamma,
-      absolute: true,
     });
     
     this.log('info', chalk.green('All mobile sensor overrides + touch emulation active'));
@@ -291,7 +291,6 @@ class BulletproofOctoMobilePlaywright {
           alpha: this.currentOrientation.alpha,
           beta: this.currentOrientation.beta,
           gamma: this.currentOrientation.gamma,
-          absolute: true,
         });
 
         // Gentle geolocation drift (realistic walking speed)
